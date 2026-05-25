@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\KartingController;
+use App\Http\Controllers\LapTimeController; // NUEVO: Importamos el controlador de telemetría
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\KartingController as AdminKartingController;
 
@@ -10,16 +12,30 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
+// =========================================================
+// RUTAS PÚBLICAS
+// =========================================================
 Route::get('/buscar-kartings', [KartingController::class, 'search'])->name('kartings.search');
 Route::get('/karting/detalles', [KartingController::class, 'show'])->name('kartings.show');
 Route::get('/contacto', function () {
     return view('contacto');
 })->name('contacto');
 
+
+// =========================================================
+// ZONA PRIVADA DEL PILOTO (Box y Telemetría)
+// =========================================================
+
+// Ruta del Box (Ahora carga el historial de tiempos)
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $lapTimes = Auth::user()->lapTimes()->orderBy('record_date', 'desc')->get();
+    return view('dashboard', compact('lapTimes'));
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+// NUEVO: Ruta para guardar un nuevo crono en la base de datos
+Route::post('/lap-times', [LapTimeController::class, 'store'])
+    ->middleware('auth')
+    ->name('lap-times.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -30,7 +46,9 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 
-
+// =========================================================
+// GRUPO DE RUTAS DE ADMINISTRACIÓN (SOLO PARA EL JEFE)
+// =========================================================
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     
     // Panel principal (Dashboard)

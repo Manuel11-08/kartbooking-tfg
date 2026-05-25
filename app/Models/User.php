@@ -29,4 +29,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function lapTimes()
+    {
+        return $this->hasMany(LapTime::class);
+    }
 }
