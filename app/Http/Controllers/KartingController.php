@@ -4,105 +4,125 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use App\Models\Karting; 
 
 class KartingController extends Controller
 {
     public function search(Request $request)
     {
-        set_time_limit(120);
+        $locationName = $request->input('location');
+        $lat = $request->input('lat');
+        $lng = $request->input('lng');
+        $radius = (int) $request->input('radius', 20);
 
-        if (!$request->has('lat') || !$request->has('lon')) {
-            return view('kartings.search', ['kartings' => []]);
-        }
-
-        $lat = (float) $request->input('lat');
-        $lon = (float) $request->input('lon');
-        $radius = (int) $request->input('radius', 20000); 
-
-        
-        $query = "[out:json][timeout:90];
-        (
-          nwr(around:{$radius},{$lat},{$lon})['sport'='karting'];
-          nwr(around:{$radius},{$lat},{$lon})['sport'='motor']['motor_sport'='karting'];
-          nwr(around:{$radius},{$lat},{$lon})['karting'='yes'];
-          nwr(around:{$radius},{$lat},{$lon})['name'~'(^| )[Kk]art'];
-          nwr(around:{$radius},{$lat},{$lon})['name'~'KR24'];
-        );
-        out center;";
-
-        $response = Http::withoutVerifying()
-                        ->timeout(90)
-                        ->asForm()
-                        ->withHeaders([
-                            'User-Agent' => 'Kartbooking TFG Project (Student)',
-                            'Accept' => '*/*'
-                        ])
-                        ->post('https://overpass-api.de/api/interpreter', [
-                            'data' => $query
-                        ]);
-
-        $apiKartings = $response->json('elements') ?? [];
-
-      
-        $localKartingsRaw = Karting::all();
-        $localKartings = [];
-
-        foreach ($localKartingsRaw as $local) {
-           
-            $dist = $this->getDistance($lat, $lon, $local->latitude, $local->longitude);
+        if ($locationName && (!$lat || !$lng)) {
+            $geoResponse = Http::get('https://maps.googleapis.com/maps/api/place/textsearch/json', [
+                'query' => $locationName,
+                'key' => env('GOOGLE_PLACES_API_KEY'),
+                'language' => 'es'
+            ]);
             
-           
-            if ($dist <= ($radius / 1000)) {
-                $localKartings[] = [
-                    'id' => 'local_' . $local->id,
-                    'lat' => $local->latitude,
-                    'lon' => $local->longitude,
-                    'tags' => [
-                        'name' => $local->name . ' (Local)',
-                    ]
-                ];
+            $geoResult = $geoResponse->json()['results'][0] ?? null;
+            if ($geoResult) {
+                $lat = $geoResult['geometry']['location']['lat'];
+                $lng = $geoResult['geometry']['location']['lng'];
             }
         }
 
-       
-        $allResults = collect(array_merge($apiKartings, $localKartings));
+        $kartings = [];
 
-        $kartings = $allResults
-            ->filter(function ($item) {
-                if (!isset($item['tags']['name'])) return false;
-                $name = strtolower($item['tags']['name']);
-                $forbidden = ['melkart', 'dios', 'restaurante', 'bar', 'hotel', 'asociación', 'calle', 'avenida', 'automodelismo'];
-                foreach ($forbidden as $word) {
-                    if (str_contains($name, $word)) return false;
+        if ($lat && $lng) {
+            $response = Http::get('https://maps.googleapis.com/maps/api/place/textsearch/json', [
+                'query' => 'karting',
+                'location' => $lat . ',' . $lng,
+                'radius' => $radius * 1000,
+                'key' => env('GOOGLE_PLACES_API_KEY'),
+                'language' => 'es'
+            ]);
+            
+            $resultados = $response->json()['results'] ?? [];
+            
+            foreach ($resultados as $k) {
+                $nombre = strtolower($k['name']);
+                
+               
+                if (!str_contains($nombre, 'kart') && !str_contains($nombre, 'circuito') && !str_contains($nombre, 'motor') && !str_contains($nombre, 'speed')) {
+                    continue; 
                 }
-                return true;
-            })
-            ->unique(function ($item) {
-                return $item['tags']['name'];
-            })
-            ->values()
-            ->toArray();
 
-        return view('kartings.search', compact('kartings', 'lat', 'lon', 'radius'));
+               
+                $palabrasProhibidas = ['humor amarillo', 'action live', 'paintball', 'laser', 'escape', 'trampoline', 'bolera', 'spa', 'shopping'];
+                $esValido = true;
+                foreach ($palabrasProhibidas as $palabra) {
+                    if (str_contains($nombre, $palabra)) {
+                        $esValido = false;
+                        break;
+                    }
+                }
+                if (!$esValido) continue;
+
+                
+                if (isset($k['geometry']['location'])) {
+                    $placeLat = $k['geometry']['location']['lat'];
+                    $placeLng = $k['geometry']['location']['lng'];
+                    
+                    $distanciaKm = $this->calcularDistancia($lat, $lng, $placeLat, $placeLng);
+                    
+                    if ($distanciaKm <= $radius) {
+                        $k['distancia_real'] = round($distanciaKm, 1);
+                        $kartings[] = $k;
+                    }
+                }
+            }
+
+            usort($kartings, function($a, $b) {
+                return $a['distancia_real'] <=> $b['distancia_real'];
+            });
+
+        } elseif ($locationName) {
+           
+            $response = Http::get('https://maps.googleapis.com/maps/api/place/textsearch/json', [
+                'query' => 'circuito karting en ' . $locationName,
+                'key' => env('GOOGLE_PLACES_API_KEY'),
+                'language' => 'es'
+            ]);
+            
+            $resultados = $response->json()['results'] ?? [];
+            foreach ($resultados as $k) {
+                $nombre = strtolower($k['name']);
+                if (!str_contains($nombre, 'kart') && !str_contains($nombre, 'circuito') && !str_contains($nombre, 'motor')) {
+                    continue;
+                }
+                $kartings[] = $k;
+            }
+        }
+
+        return view('kartings.search', compact('kartings', 'locationName', 'radius'));
     }
 
-  
-    private function getDistance($lat1, $lon1, $lat2, $lon2) {
+    private function calcularDistancia($lat1, $lon1, $lat2, $lon2)
+    {
         $theta = $lon1 - $lon2;
-        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
         $dist = acos($dist);
         $dist = rad2deg($dist);
-        $miles = $dist * 60 * 1.1515;
-        return ($miles * 1.609344); //Para que te de en km
+        return ($dist * 60 * 1.1515 * 1.609344);
     }
 
-    public function show(Request $request)
+    public function show($id)
     {
-        $name = $request->query('name', 'Circuito Desconocido');
-        $lat = $request->query('lat');
-        $lon = $request->query('lon');
+        $response = Http::get('https://maps.googleapis.com/maps/api/place/details/json', [
+            'place_id' => $id,
+            'fields' => 'name,rating,reviews,formatted_address,photos,url',
+            'key' => env('GOOGLE_PLACES_API_KEY'),
+            'language' => 'es'
+        ]);
+        
+        $karting = $response->json()['result'] ?? null;
+        
+        if (!$karting) {
+            return redirect()->route('kartings.search')->with('error', 'Circuito no encontrado');
+        }
 
-        return view('kartings.show', compact('name', 'lat', 'lon'));
+        return view('kartings.show', compact('karting'));
     }
 }

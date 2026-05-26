@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\KartingController;
-use App\Http\Controllers\LapTimeController; // NUEVO: Importamos el controlador de telemetría
+use App\Http\Controllers\LapTimeController; 
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\KartingController as AdminKartingController;
 
@@ -12,19 +12,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// =========================================================
-// RUTAS PÚBLICAS
-// =========================================================
 Route::get('/buscar-kartings', [KartingController::class, 'search'])->name('kartings.search');
-Route::get('/karting/detalles', [KartingController::class, 'show'])->name('kartings.show');
+Route::get('/karting/{id}/detalles', [KartingController::class, 'show'])->name('kartings.show');
 Route::get('/contacto', function () {
     return view('contacto');
 })->name('contacto');
 
 
-// =========================================================
-// ZONA PRIVADA DEL PILOTO (Box y Telemetría)
-// =========================================================
 
 // Ruta del Box (Ahora carga el historial de tiempos)
 Route::get('/dashboard', function () {
@@ -46,9 +40,6 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 
-// =========================================================
-// GRUPO DE RUTAS DE ADMINISTRACIÓN (SOLO PARA EL JEFE)
-// =========================================================
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     
     // Panel principal (Dashboard)
