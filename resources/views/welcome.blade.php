@@ -115,44 +115,47 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <a href="https://www.google.com/maps/search/?api=1&query=Karting+Carlos+Sainz+Madrid" target="_blank" class="group bg-black rounded-xl overflow-hidden border border-zinc-800 hover:border-kartred transition duration-300 shadow-2xl block">
-                    <div class="h-56 overflow-hidden relative">
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent z-10 transition duration-300"></div>
-                        <img src="https://images.unsplash.com/photo-1591462392228-2bbadd4dbab6?auto=format&fit=crop&w=800&q=80" alt="Karting Indoor" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
+                <div class="group bg-black rounded-xl overflow-hidden border border-zinc-800 hover:border-kartred transition duration-300 shadow-2xl block">
+                    <div class="h-56 overflow-hidden relative flex items-center justify-center bg-zinc-900 border-b border-zinc-800">
+                        <svg class="w-20 h-20 text-zinc-800 group-hover:text-kartred transition duration-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L6.113 22.38a.75.75 0 0 1-1.06 0l-1.434-1.434a.75.75 0 0 1 0-1.06l2.008-2.008a3 3 0 0 1 2.122-.879H9Zm0 0a3 3 0 0 1 3-3h1.5a3 3 0 0 1 3 3m-7.5 0v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V17.25m0 0v1.5c0 .621.504 1.125 1.125 1.125h2.25c.621 0 1.125-.504 1.125-1.125V15.75M12 3v1.5M12 18.75V21m-4.72-15.53 1.06 1.06m7.32-1.06-1.06 1.06M3 12h1.5m15 0H21M4.22 19.78l1.06-1.06m13.44 1.06-1.06-1.06X" />
+                        </svg>
+                        <div class="absolute top-4 left-4 bg-black/80 text-xs font-bold px-3 py-1 rounded border border-zinc-700 tracking-wider">CIRCUITO 01</div>
                     </div>
                     <div class="p-6 relative z-20">
                         <span class="text-xs font-black text-kartred uppercase tracking-widest mb-1 block">Madrid</span>
                         <h3 class="text-xl font-black uppercase text-white mb-2 group-hover:text-kartred transition">Karting Carlos Sainz</h3>
                         <p class="text-gray-400 text-sm font-mono mb-4">Indoor - Asfalto Técnico</p>
-                        <span class="text-xs font-bold text-gray-500 uppercase">Ver mapa -></span>
                     </div>
-                </a>
+                </div>
                 
-                <a href="https://www.google.com/maps/search/?api=1&query=KartCenter+Campillos+Malaga" target="_blank" class="group bg-black rounded-xl overflow-hidden border border-zinc-800 hover:border-kartred transition duration-300 shadow-2xl block">
-                    <div class="h-56 overflow-hidden relative">
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent z-10 transition duration-300"></div>
-                        <img src="https://images.unsplash.com/photo-1541344999736-83eca272822a?auto=format&fit=crop&w=800&q=80" alt="Karting Outdoor" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
+                <div class="group bg-black rounded-xl overflow-hidden border border-zinc-800 hover:border-kartred transition duration-300 shadow-2xl block">
+                    <div class="h-56 overflow-hidden relative flex items-center justify-center bg-zinc-900 border-b border-zinc-800">
+                        <svg class="w-20 h-20 text-zinc-800 group-hover:text-kartred transition duration-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L6.113 22.38a.75.75 0 0 1-1.06 0l-1.434-1.434a.75.75 0 0 1 0-1.06l2.008-2.008a3 3 0 0 1 2.122-.879H9Zm0 0a3 3 0 0 1 3-3h1.5a3 3 0 0 1 3 3m-7.5 0v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V17.25m0 0v1.5c0 .621.504 1.125 1.125 1.125h2.25c.621 0 1.125-.504 1.125-1.125V15.75M12 3v1.5M12 18.75V21m-4.72-15.53 1.06 1.06m7.32-1.06-1.06 1.06M3 12h1.5m15 0H21M4.22 19.78l1.06-1.06m13.44 1.06-1.06-1.06X" />
+                        </svg>
+                        <div class="absolute top-4 left-4 bg-black/80 text-xs font-bold px-3 py-1 rounded border border-zinc-700 tracking-wider">CIRCUITO 02</div>
                     </div>
                     <div class="p-6 relative z-20">
                         <span class="text-xs font-black text-kartred uppercase tracking-widest mb-1 block">Málaga</span>
                         <h3 class="text-xl font-black uppercase text-white mb-2 group-hover:text-kartred transition">KartCenter Campillos</h3>
                         <p class="text-gray-400 text-sm font-mono mb-4">Outdoor - Trazado CIK-FIA</p>
-                        <span class="text-xs font-bold text-gray-500 uppercase">Ver mapa -></span>
                     </div>
-                </a>
+                </div>
 
-                <a href="https://www.google.com/maps/search/?api=1&query=Karting+Motorland+Aragon" target="_blank" class="group bg-black rounded-xl overflow-hidden border border-zinc-800 hover:border-kartred transition duration-300 shadow-2xl block">
-                    <div class="h-56 overflow-hidden relative">
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent z-10 transition duration-300"></div>
-                        <img src="https://images.unsplash.com/photo-1629837583626-444a839f9791?auto=format&fit=crop&w=800&q=80" alt="Karting Competicion" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
+                <div class="group bg-black rounded-xl overflow-hidden border border-zinc-800 hover:border-kartred transition duration-300 shadow-2xl block">
+                    <div class="h-56 overflow-hidden relative flex items-center justify-center bg-zinc-900 border-b border-zinc-800">
+                        <svg class="w-20 h-20 text-zinc-800 group-hover:text-kartred transition duration-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L6.113 22.38a.75.75 0 0 1-1.06 0l-1.434-1.434a.75.75 0 0 1 0-1.06l2.008-2.008a3 3 0 0 1 2.122-.879H9Zm0 0a3 3 0 0 1 3-3h1.5a3 3 0 0 1 3 3m-7.5 0v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V17.25m0 0v1.5c0 .621.504 1.125 1.125 1.125h2.25c.621 0 1.125-.504 1.125-1.125V15.75M12 3v1.5M12 18.75V21m-4.72-15.53 1.06 1.06m7.32-1.06-1.06 1.06M3 12h1.5m15 0H21M4.22 19.78l1.06-1.06m13.44 1.06-1.06-1.06X" />
+                        </svg>
+                        <div class="absolute top-4 left-4 bg-black/80 text-xs font-bold px-3 py-1 rounded border border-zinc-700 tracking-wider">CIRCUITO 03</div>
                     </div>
                     <div class="p-6 relative z-20">
                         <span class="text-xs font-black text-kartred uppercase tracking-widest mb-1 block">Teruel</span>
                         <h3 class="text-xl font-black uppercase text-white mb-2 group-hover:text-kartred transition">Karting Motorland</h3>
                         <p class="text-gray-400 text-sm font-mono mb-4">Outdoor - Alta Velocidad</p>
-                        <span class="text-xs font-bold text-gray-500 uppercase">Ver mapa -></span>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
     </section>
@@ -195,7 +198,7 @@
     <footer class="border-t border-zinc-900 bg-black py-12 text-center">
         <div class="max-w-7xl mx-auto px-6">
             <h3 class="text-2xl font-black text-zinc-800 tracking-widest uppercase italic mb-6">KARTBOOKING</h3>
-            <p class="text-sm font-bold text-zinc-600 uppercase tracking-widest">&copy; {{ date('Y') }} Kartbooking. Proyecto TFG. Todos los derechos reservados.</p>
+            <p class="text-sm font-bold text-zinc-600 uppercase tracking-widest">© {{ date('Y') }} Kartbooking. Proyecto TFG. Todos los derechos reservados.</p>
         </div>
     </footer>
 </body>

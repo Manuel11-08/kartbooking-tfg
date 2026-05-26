@@ -12,19 +12,20 @@ class KartingController extends Controller
         $locationName = $request->input('location');
         $lat = $request->input('lat');
         $lng = $request->input('lng');
-        $radius = (int) $request->input('radius', 20);
+        $radio = (int) $request->input('radius', 20);
 
+        
         if ($locationName && (!$lat || !$lng)) {
             $geoResponse = Http::get('https://maps.googleapis.com/maps/api/place/textsearch/json', [
                 'query' => $locationName,
                 'key' => env('GOOGLE_PLACES_API_KEY'),
                 'language' => 'es'
             ]);
-            
-            $geoResult = $geoResponse->json()['results'][0] ?? null;
-            if ($geoResult) {
-                $lat = $geoResult['geometry']['location']['lat'];
-                $lng = $geoResult['geometry']['location']['lng'];
+
+            $primerResultado = $geoResponse->json()['results'][0] ?? null;
+            if ($primerResultado) {
+                $lat = $primerResultado['geometry']['location']['lat'];
+                $lng = $primerResultado['geometry']['location']['lng'];
             }
         }
 
@@ -34,58 +35,58 @@ class KartingController extends Controller
             $response = Http::get('https://maps.googleapis.com/maps/api/place/textsearch/json', [
                 'query' => 'karting',
                 'location' => $lat . ',' . $lng,
-                'radius' => $radius * 1000,
+                'radius' => $radio * 1000,
                 'key' => env('GOOGLE_PLACES_API_KEY'),
                 'language' => 'es'
             ]);
-            
+
             $resultados = $response->json()['results'] ?? [];
-            
+
             foreach ($resultados as $k) {
                 $nombre = strtolower($k['name']);
+
                 
-               
                 if (!str_contains($nombre, 'kart') && !str_contains($nombre, 'circuito') && !str_contains($nombre, 'motor') && !str_contains($nombre, 'speed')) {
-                    continue; 
+                    continue;
                 }
 
-               
-                $palabrasProhibidas = ['humor amarillo', 'action live', 'paintball', 'laser', 'escape', 'trampoline', 'bolera', 'spa', 'shopping'];
-                $esValido = true;
-                foreach ($palabrasProhibidas as $palabra) {
+                
+                $excluir = ['paintball', 'laser', 'escape', 'trampoline', 'bolera', 'spa', 'shopping', 'humor amarillo', 'action live'];
+                $valido = true;
+                foreach ($excluir as $palabra) {
                     if (str_contains($nombre, $palabra)) {
-                        $esValido = false;
+                        $valido = false;
                         break;
                     }
                 }
-                if (!$esValido) continue;
+                if (!$valido) continue;
 
-                
+                // Calculamos distancia real y descartamos los que se salen del radio
                 if (isset($k['geometry']['location'])) {
                     $placeLat = $k['geometry']['location']['lat'];
                     $placeLng = $k['geometry']['location']['lng'];
-                    
-                    $distanciaKm = $this->calcularDistancia($lat, $lng, $placeLat, $placeLng);
-                    
-                    if ($distanciaKm <= $radius) {
-                        $k['distancia_real'] = round($distanciaKm, 1);
+                    $distancia = $this->calcularDistancia($lat, $lng, $placeLat, $placeLng);
+
+                    if ($distancia <= $radio) {
+                        $k['distancia_real'] = round($distancia, 1);
                         $kartings[] = $k;
                     }
                 }
             }
 
+            // Ordenamos por distancia de menor a mayor
             usort($kartings, function($a, $b) {
                 return $a['distancia_real'] <=> $b['distancia_real'];
             });
 
         } elseif ($locationName) {
-           
+            // Si no hay coordenadas buscamos directamente por nombre de ciudad
             $response = Http::get('https://maps.googleapis.com/maps/api/place/textsearch/json', [
                 'query' => 'circuito karting en ' . $locationName,
                 'key' => env('GOOGLE_PLACES_API_KEY'),
                 'language' => 'es'
             ]);
-            
+
             $resultados = $response->json()['results'] ?? [];
             foreach ($resultados as $k) {
                 $nombre = strtolower($k['name']);
@@ -96,9 +97,10 @@ class KartingController extends Controller
             }
         }
 
-        return view('kartings.search', compact('kartings', 'locationName', 'radius'));
+        return view('kartings.search', compact('kartings', 'locationName', 'radio'));
     }
 
+    // Formula para calcular distancia entre dos coordenadas en km
     private function calcularDistancia($lat1, $lon1, $lat2, $lon2)
     {
         $theta = $lon1 - $lon2;
@@ -116,11 +118,11 @@ class KartingController extends Controller
             'key' => env('GOOGLE_PLACES_API_KEY'),
             'language' => 'es'
         ]);
-        
+
         $karting = $response->json()['result'] ?? null;
-        
+
         if (!$karting) {
-            return redirect()->route('kartings.search')->with('error', 'Circuito no encontrado');
+            return redirect()->route('kartings.search')->with('error', 'No se encontró el circuito');
         }
 
         return view('kartings.show', compact('karting'));
