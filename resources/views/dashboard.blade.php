@@ -6,53 +6,37 @@
     <title>Kartbooking - Mi Box</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-zinc-950 text-white antialiased flex flex-col min-h-screen selection:bg-kartred selection:text-white">
+<body class="bg-zinc-950 text-white antialiased min-h-screen">
 
-    <nav class="border-b border-kartred/30 bg-black/50 p-4 sticky top-0 z-50 backdrop-blur-sm">
+    <nav class="border-b border-kartred/30 bg-black/80 p-4 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="/" class="text-2xl font-black text-kartred tracking-widest uppercase italic">
-                KARTBOOKING
-            </a>
-            <div class="flex items-center space-x-6 text-sm font-bold text-gray-300 uppercase tracking-wider">
-                <a href="{{ route('kartings.search') }}" class="hover:text-kartred transition">Buscador</a>
-                @if(Auth::user()->is_admin)
-                    <a href="{{ route('admin.users.index') }}" class="text-kartred hover:text-white transition italic">Panel Jefe </a>
+            <a href="/" class="text-2xl font-black text-kartred tracking-widest uppercase italic">KARTBOOKING</a>
+            <div class="flex gap-4 md:gap-6 text-sm font-bold text-gray-300 uppercase items-center">
+                <a href="/" class="hover:text-kartred hidden md:block">Inicio</a>
+                <a href="{{ route('kartings.search') }}" class="hover:text-kartred hidden md:block">Buscador</a>
+                
+                @if(auth()->user()->is_admin == 1 || auth()->user()->role === 'admin' || auth()->user()->type === 'admin') 
+                    <a href="{{ route('admin.dashboard') }}" class="text-kartred border border-kartred px-3 py-1.5 rounded hover:bg-kartred hover:text-white transition tracking-widest font-black shadow-[0_0_10px_rgba(230,0,0,0.3)] bg-kartred/10">
+                        Panel Admin
+                    </a>
                 @endif
-                <form method="POST" action="{{ route('logout') }}" class="inline">
+
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="hover:text-red-500 transition uppercase font-bold cursor-pointer">
-                        Apagar Motor (Salir)
-                    </button>
+                    <button type="submit" class="text-gray-500 hover:text-white uppercase font-bold text-xs tracking-widest ml-2">Salir</button>
                 </form>
             </div>
         </div>
     </nav>
 
-    <main class="flex-grow max-w-5xl mx-auto w-full p-6 mt-10">
-        
-        <div class="bg-black border-l-8 border-kartred p-8 rounded shadow-2xl mb-8 flex flex-col md:flex-row justify-between items-start md:items-center">
-            <div>
-                <h1 class="text-4xl font-black uppercase tracking-tight mb-2">
-                    Box de <span class="text-kartred">{{ Auth::user()->name }}</span>
-                </h1>
-                <p class="text-gray-400 font-mono text-sm">Licencia activa. Contacto: {{ Auth::user()->email }}</p>
-            </div>
-            <div class="mt-4 md:mt-0">
-                <span class="bg-kartred/20 text-kartred border border-kartred/50 px-4 py-2 rounded-full font-black uppercase text-xs tracking-widest">
-                    ESTADO: EN PISTA
-                </span>
-            </div>
-        </div>
+    <main class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-xl hover:border-kartred/50 transition relative overflow-hidden group">
-                <div class="absolute top-0 left-0 w-1 h-full bg-kartred transform -translate-x-full group-hover:translate-x-0 transition"></div>
-                <h3 class="text-2xl font-black uppercase mb-4 text-white">Radar de Circuitos</h3>
-                <p class="text-gray-400 mb-6 text-sm">Utiliza nuestra conexión por satélite para encontrar las instalaciones de karting más cercanas a tu posición actual.</p>
-                <a href="{{ route('kartings.search') }}" class="inline-block bg-zinc-800 hover:bg-kartred text-white font-bold py-2 px-6 rounded uppercase text-sm transition">
-                    Abrir Radar
-                </a>
-            </div>
+        <div class="md:col-span-1">
+            @if(session('success'))
+                <div class="bg-green-600/20 border border-green-500 text-green-400 p-4 rounded mb-6 font-bold uppercase text-sm tracking-widest">
+                    {{ session('success') }}
+                </div>
+            @endif
 
             <div class="bg-black border border-zinc-800 p-8 rounded-xl shadow-xl relative overflow-hidden">
                 <h3 class="text-xl font-black uppercase mb-4 text-white border-b border-zinc-800 pb-2">Registrar Nuevo Crono</h3>
@@ -60,63 +44,99 @@
                     @csrf
                     <div>
                         <label class="block uppercase text-[10px] font-black text-gray-500 mb-1 tracking-widest">Nombre del Circuito</label>
-                        <input type="text" name="karting_name" required placeholder="Ej: Karting Motorland" class="w-full bg-zinc-900 border border-zinc-700 rounded p-2 text-white focus:ring-kartred focus:border-kartred text-sm outline-none transition">
+                        <input type="text" name="karting_name" required placeholder="Ej: Karting Motorland" class="w-full bg-zinc-900 border border-zinc-700 rounded p-2 text-white focus:border-kartred text-sm outline-none transition">
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block uppercase text-[10px] font-black text-gray-500 mb-1 tracking-widest">Mejor Tiempo</label>
-                            <input type="text" name="lap_time" required placeholder="01:05.432" class="w-full bg-zinc-900 border border-zinc-700 rounded p-2 text-white font-mono focus:ring-kartred focus:border-kartred text-sm outline-none transition">
-                        </div>
-                        <div>
-                            <label class="block uppercase text-[10px] font-black text-gray-500 mb-1 tracking-widest">Fecha</label>
-                            <input type="date" name="record_date" required class="w-full bg-zinc-900 border border-zinc-700 rounded p-2 text-white focus:ring-kartred focus:border-kartred text-sm outline-none transition [color-scheme:dark]">
-                        </div>
+                    <div>
+                        <label class="block uppercase text-[10px] font-black text-gray-500 mb-1 tracking-widest">Mejor Tiempo</label>
+                        <input type="text" name="lap_time" required placeholder="01:05.432" class="w-full bg-zinc-900 border border-zinc-700 rounded p-2 text-white font-mono focus:border-kartred text-sm outline-none transition">
                     </div>
-                    <button type="submit" class="w-full bg-kartred hover:bg-red-700 text-white font-black py-3 mt-2 rounded uppercase transition text-sm tracking-wider shadow-lg shadow-kartred/20">
-                        Guardar Telemetría
+                    <div>
+                        <label class="block uppercase text-[10px] font-black text-gray-500 mb-1 tracking-widest">Fecha de la Vuelta</label>
+                        <input type="date" name="record_date" required class="w-full bg-zinc-900 border border-zinc-700 rounded p-2 text-white focus:border-kartred text-sm outline-none transition">
+                    </div>
+                    <button type="submit" class="w-full bg-kartred hover:bg-red-700 text-white font-black py-3 rounded uppercase tracking-widest transition text-sm mt-2">
+                        Guardar Crono
                     </button>
                 </form>
             </div>
         </div>
 
-        <div class="mt-10 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-2xl">
-            <div class="bg-black p-6 border-b border-zinc-800 flex justify-between items-center">
-                <h3 class="text-2xl font-black uppercase text-white tracking-tight">Mi Historial en Pista</h3>
-                <span class="text-gray-500 font-mono text-sm">Vueltas Totales: {{ isset($lapTimes) ? $lapTimes->count() : 0 }}</span>
-            </div>
-
-            @if(session('success'))
-                <div class="bg-green-600 text-white p-3 text-sm font-bold uppercase tracking-wide text-center">
-                    {{ session('success') }}
-                </div>
-            @endif
+        <div class="md:col-span-2">
+            <h3 class="text-2xl font-black uppercase mb-6 text-white border-l-4 border-kartred pl-4">Tu Historial de Pista</h3>
 
             @if(isset($lapTimes) && $lapTimes->count() > 0)
-                <table class="w-full text-left">
-                    <thead class="bg-zinc-950 text-kartred uppercase text-[10px] font-black tracking-widest">
-                        <tr>
-                            <th class="p-4 border-b border-zinc-800">Circuito</th>
-                            <th class="p-4 border-b border-zinc-800">Fecha del Récord</th>
-                            <th class="p-4 border-b border-zinc-800 text-right">Crono Registrado</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-zinc-800">
-                        @foreach($lapTimes as $lap)
-                        <tr class="hover:bg-zinc-800/50 transition">
-                            <td class="p-4 font-bold text-white uppercase">{{ $lap->karting_name }}</td>
-                            <td class="p-4 text-gray-400 font-mono text-sm">{{ \Carbon\Carbon::parse($lap->record_date)->format('d / m / Y') }}</td>
-                            <td class="p-4 text-right font-mono text-kartred font-black text-xl tracking-tighter">{{ $lap->lap_time }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <div class="space-y-4">
+                    @foreach($lapTimes as $lapTime)
+                        <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-xl shadow-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            
+                            <div class="flex-1">
+                                <h4 class="text-lg font-black text-white uppercase">{{ $lapTime->karting_name }}</h4>
+                                <p class="text-kartred font-mono text-xl font-bold">{{ $lapTime->lap_time }}</p>
+                                <p class="text-xs text-zinc-500 uppercase tracking-widest mt-1">Vuelta realizada el: {{ \Carbon\Carbon::parse($lapTime->record_date)->format('d/m/Y') }}</p>
+                            </div>
+
+                            <div class="flex gap-2 w-full sm:w-auto">
+                                <button onclick="toggleEdit('edit-form-{{ $lapTime->id }}')" class="flex-1 sm:flex-none bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-2 px-4 rounded text-xs uppercase tracking-widest transition border border-zinc-700">
+                                    Editar
+                                </button>
+                                
+                                <form action="{{ route('lap-times.destroy', $lapTime) }}" method="POST" class="flex-1 sm:flex-none">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" onclick="return confirm('¿Seguro que quieres borrar este crono?')" class="w-full bg-red-900/50 hover:bg-red-800 text-white font-bold py-2 px-4 rounded text-xs uppercase tracking-widest transition border border-red-900">
+                                        Borrar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div id="edit-form-{{ $lapTime->id }}" class="hidden bg-black border border-zinc-800 p-5 rounded-xl mt-2 mb-6 shadow-inner">
+                            <form action="{{ route('lap-times.update', $lapTime) }}" method="POST" class="flex flex-col sm:flex-row gap-4 items-end">
+                                @csrf
+                                @method('PUT')
+                                <div class="flex-1 w-full">
+                                    <label class="block uppercase text-[10px] font-black text-gray-500 mb-1 tracking-widest">Circuito</label>
+                                    <input type="text" name="karting_name" value="{{ $lapTime->karting_name }}" required class="w-full bg-zinc-900 border border-zinc-700 rounded p-2 text-white focus:border-kartred text-sm outline-none transition">
+                                </div>
+                                <div class="flex-1 w-full">
+                                    <label class="block uppercase text-[10px] font-black text-gray-500 mb-1 tracking-widest">Tiempo</label>
+                                    <input type="text" name="lap_time" value="{{ $lapTime->lap_time }}" required class="w-full bg-zinc-900 border border-zinc-700 rounded p-2 text-white font-mono focus:border-kartred text-sm outline-none transition">
+                                </div>
+                                <div class="flex-1 w-full">
+                                    <label class="block uppercase text-[10px] font-black text-gray-500 mb-1 tracking-widest">Fecha</label>
+                                    <input type="date" name="record_date" value="{{ explode(' ', $lapTime->record_date)[0] }}" required class="w-full bg-zinc-900 border border-zinc-700 rounded p-2 text-white focus:border-kartred text-sm outline-none transition">
+                                </div>
+                                <div class="flex gap-2 w-full sm:w-auto mt-4 sm:mt-0">
+                                    <button type="submit" class="bg-kartred hover:bg-red-700 text-white font-bold py-2 px-6 rounded text-xs uppercase tracking-widest transition h-[38px]">
+                                        Actualizar
+                                    </button>
+                                    <button type="button" onclick="toggleEdit('edit-form-{{ $lapTime->id }}')" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-2 px-4 rounded text-xs uppercase tracking-widest transition h-[38px]">
+                                        Cancelar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
             @else
-                <div class="p-16 text-center text-gray-500">
-                    <p class="text-xl mb-2 font-bold uppercase">Aún no hay registros de telemetría</p>
-                    <p class="text-sm italic">¡Busca un circuito en el radar, sal a la pista y registra tu primer tiempo!</p>
+                <div class="bg-zinc-900/50 border border-zinc-800 p-10 rounded-xl text-center">
+                    <p class="text-gray-500 uppercase tracking-widest text-sm font-bold">Tu telemetría está vacía.</p>
+                    <p class="text-zinc-600 text-xs mt-2">Registra tu primer crono en el panel izquierdo.</p>
                 </div>
             @endif
         </div>
+
     </main>
+
+    <script>
+        function toggleEdit(id) {
+            const form = document.getElementById(id);
+            if (form.classList.contains('hidden')) {
+                form.classList.remove('hidden');
+            } else {
+                form.classList.add('hidden');
+            }
+        }
+    </script>
 </body>
 </html>

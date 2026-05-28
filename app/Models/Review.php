@@ -5,16 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LapTime extends Model
+class Review extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'karting_name',
-        'lap_time',
-        'record_date',
-    ];
+    protected $fillable = ['content'];
 
+    // Una reseña pertenece a un usuario
     public function user()
     {
         return $this->belongsTo(User::class);

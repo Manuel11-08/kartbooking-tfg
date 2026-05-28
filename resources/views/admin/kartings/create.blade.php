@@ -8,15 +8,24 @@
 </head>
 <body class="bg-zinc-950 text-white antialiased">
     <div class="flex min-h-screen">
-        <aside class="w-64 bg-black border-r border-kartred/20 p-6">
-            <div class="text-2xl font-black text-kartred tracking-tighter mb-10 uppercase italic">Kartbooking Admin</div>
-            <nav class="space-y-2">
-                <a href="{{ route('admin.users.index') }}" class="block p-3 text-gray-400 hover:text-white transition italic">Usuarios</a>
-                <a href="{{ route('admin.kartings.index') }}" class="block p-3 text-gray-400 hover:text-white transition italic">Circuitos Locales</a>
-                <a href="{{ route('admin.kartings.create') }}" class="block p-3 bg-kartred text-white font-bold rounded shadow-lg">Añadir Circuito</a>
-                <a href="/" class="block p-3 text-gray-400 hover:text-white transition italic mt-10 border-t border-zinc-800 pt-4">Volver a la Web</a>
+       <aside class="w-64 bg-black border-r border-zinc-900 flex flex-col hidden md:flex">
+            <div class="p-6 border-b border-zinc-900">
+            <h2 class="text-xl font-black text-kartred tracking-widest uppercase italic">KARTBOOKING</h2>
+            <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Panel de Control</span>
+         </div>
+            <nav class="flex-1 p-4 space-y-2">
+         
+            <a href="{{ route('admin.users.index') }}" class="block px-4 py-3 text-sm font-bold uppercase tracking-widest rounded transition {{ request()->routeIs('admin.users.*') ? 'text-kartred bg-zinc-900 border-l-2 border-kartred' : 'text-gray-400 hover:text-white hover:bg-zinc-900' }}">Usuarios</a>
+            <a href="{{ route('admin.kartings.index') }}" class="block px-4 py-3 text-sm font-bold uppercase tracking-widest rounded transition {{ request()->routeIs('admin.kartings.index') ? 'text-kartred bg-zinc-900 border-l-2 border-kartred' : 'text-gray-400 hover:text-white hover:bg-zinc-900' }}">Circuitos Locales</a>
+            <a href="{{ route('admin.kartings.create') }}" class="block px-4 py-3 text-sm font-bold uppercase tracking-widest rounded transition {{ request()->routeIs('admin.kartings.create') ? 'text-kartred bg-zinc-900 border-l-2 border-kartred' : 'text-gray-400 hover:text-white hover:bg-zinc-900' }}">Añadir Circuito</a>
+            <a href="{{ route('admin.reviews.index') }}" class="block px-4 py-3 text-sm font-bold uppercase tracking-widest rounded transition {{ request()->routeIs('admin.reviews.*') ? 'text-kartred bg-zinc-900 border-l-2 border-kartred' : 'text-gray-400 hover:text-white hover:bg-zinc-900' }}">Moderación</a>
+            <div class="pt-6 mt-6 border-t border-zinc-800">
+                <a href="/" class="block px-4 py-3 text-sm font-bold uppercase tracking-widest text-gray-500 hover:text-kartred hover:bg-zinc-900 rounded transition">
+                     Volver a la Web
+                </a>
+            </div>
             </nav>
-        </aside>
+         </aside>
 
         <main class="flex-1 p-10">
             <h1 class="text-3xl font-black uppercase mb-6 border-l-8 border-kartred pl-4">Nuevo Circuito Local</h1>

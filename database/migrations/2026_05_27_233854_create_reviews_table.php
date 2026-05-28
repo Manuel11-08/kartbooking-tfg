@@ -8,17 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('lap_times', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
+            // Esto enlaza la reseña con el usuario que la escribió
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('karting_name');
-            $table->string('lap_time');
+            $table->text('content');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('lap_times');
+        Schema::dropIfExists('reviews');
     }
 };

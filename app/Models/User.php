@@ -30,8 +30,13 @@ class User extends Authenticatable
         ];
     }
 
-    public function lapTimes()
+   public function lapTimes()
     {
         return $this->hasMany(LapTime::class);
+    }
+    
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 }

@@ -8,12 +8,18 @@
 </head>
 <body class="bg-zinc-950 text-white min-h-screen flex flex-col">
 
-    <nav class="bg-black border-b border-zinc-800 p-4 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="/" class="text-2xl font-black text-kartred uppercase italic">KARTBOOKING</a>
-            <div class="flex items-center gap-6">
-                <a href="/" class="text-sm font-bold text-gray-300 hover:text-kartred uppercase">Inicio</a>
-                <a href="{{ url('/dashboard') }}" class="text-sm font-bold text-gray-300 hover:text-white uppercase">Mi Box</a>
+  <nav class="border-b border-kartred/30 bg-black/80 p-4 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center w-full">
+            <a href="/" class="text-2xl font-black text-kartred tracking-widest uppercase italic hover:text-white transition">
+                KARTBOOKING
+            </a>
+            
+            <div class="flex justify-end items-center gap-6">
+                <a href="/" class="text-sm font-bold text-gray-300 hover:text-kartred uppercase transition tracking-wider">Inicio</a>
+                <a href="{{ route('contacto') }}" class="text-sm font-bold text-gray-300 hover:text-kartred uppercase transition tracking-wider">Contacto</a>
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="text-sm font-bold text-gray-300 hover:text-white uppercase transition tracking-wider">Mi Box</a>
+                @endauth
             </div>
         </div>
     </nav>

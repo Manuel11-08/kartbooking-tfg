@@ -6,7 +6,7 @@
     <title>Kartbooking - El portal de los pilotos</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        /* Patron de fondo tecnico (estilo fibra/grid) */
+        
         .bg-grid-pattern {
             background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
                               linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
@@ -16,6 +16,7 @@
 </head>
 <body class="bg-zinc-950 text-white antialiased flex flex-col min-h-screen selection:bg-kartred selection:text-white bg-grid-pattern">
 
+    <!-- NAVEGACIÓN -->
     <nav class="border-b border-kartred/30 bg-black/80 p-4 sticky top-0 z-50 backdrop-blur-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <a href="/" class="text-2xl font-black text-kartred tracking-widest uppercase italic hover:text-white transition">
@@ -34,6 +35,7 @@
         </div>
     </nav>
 
+    
     <header class="relative flex items-center justify-center py-40 overflow-hidden border-b border-zinc-900 bg-black/40">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-kartred/20 blur-[120px] rounded-full pointer-events-none"></div>
 
@@ -60,6 +62,7 @@
         </div>
     </header>
 
+    <!-- ESTADÍSTICAS -->
     <section class="bg-zinc-900 border-b border-zinc-800 py-12 shadow-2xl relative z-10">
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-zinc-700">
             <div class="py-2 hover:scale-105 transition duration-300">
@@ -77,6 +80,7 @@
         </div>
     </section>
 
+    <!-- CARACTERÍSTICAS -->
     <section class="py-24 bg-black/60 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16">
@@ -104,6 +108,7 @@
         </div>
     </section>
 
+    <!-- CIRCUITOS DESTACADOS -->
     <section class="py-24 bg-zinc-950 border-y border-zinc-900">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-end mb-12">
@@ -111,7 +116,7 @@
                     <h2 class="text-4xl font-black uppercase tracking-tight mb-2 text-white border-l-8 border-kartred pl-4">Circuitos Destacados</h2>
                     <p class="text-gray-500 pl-4">Trazados exigentes con enlace directo a sus coordenadas.</p>
                 </div>
-                <a href="{{ route('kartings.search') }}" class="text-kartred hover:text-white uppercase font-bold text-sm tracking-widest transition mt-6 md:mt-0 border-b border-kartred pb-1">Ver catálogo completo -></a>
+                <a href="{{ route('kartings.search') }}" class="text-kartred hover:text-white uppercase font-bold text-sm tracking-widest transition mt-6 md:mt-0 border-b border-kartred pb-1">Ver catálogo completo</a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -160,22 +165,45 @@
         </div>
     </section>
 
+   
     <section class="py-20 bg-black border-b border-zinc-900">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-3xl font-black uppercase tracking-tight mb-12 text-center text-white">Opiniones en <span class="text-kartred">Boxes</span></h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-zinc-900 p-8 rounded-lg border border-zinc-800">
-                    <p class="text-gray-300 italic mb-4">"Una plataforma imprescindible. Antes perdíamos media hora debatiendo a qué circuito ir. Ahora abrimos el radar de Kartbooking y vemos la pista más cercana en segundos."</p>
-                    <p class="text-kartred font-black uppercase text-sm">Piloto_89 <span class="text-gray-600 font-normal">- Usuario Verificado</span></p>
-                </div>
-                <div class="bg-zinc-900 p-8 rounded-lg border border-zinc-800">
-                    <p class="text-gray-300 italic mb-4">"Poder llevar el registro de mis tiempos por vuelta en cada circuito desde el móvil ha cambiado por completo mis tandas de entrenamiento. Brutal."</p>
-                    <p class="text-kartred font-black uppercase text-sm">ApexHunter <span class="text-gray-600 font-normal">- Usuario Verificado</span></p>
-                </div>
+
+            
+            <div class="text-center mb-16">
+                @auth
+                    <a href="{{ route('mis-resenas') }}" class="inline-block bg-zinc-900 border border-zinc-700 hover:border-kartred text-white font-bold py-3 px-8 rounded uppercase transition duration-300 tracking-wider text-sm shadow-lg">
+                        Escribir / Gestionar Mis Reseñas
+                    </a>
+                @else
+                    <p class="text-gray-400 font-bold uppercase tracking-widest text-sm bg-zinc-900/50 max-w-2xl mx-auto p-6 rounded-xl border border-zinc-800">
+                        <a href="{{ route('login') }}" class="text-kartred hover:text-white transition border-b border-kartred pb-1">Inicia sesión</a> 
+                        para dejar tu opinión en boxes.
+                    </p>
+                @endauth
+            </div>
+
+            <!-- Lista de reseñas de la Base de Datos -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @forelse($reviews as $review)
+                    <div class="bg-zinc-900 p-8 rounded-lg border border-zinc-800 relative hover:border-kartred transition duration-300">
+                        <svg class="w-8 h-8 text-zinc-800 absolute top-4 right-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+                        <p class="text-gray-300 italic mb-6 relative z-10">"{{ $review->content }}"</p>
+                        <p class="text-kartred font-black uppercase text-sm">{{ $review->user->name }}</p>
+                        <p class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">{{ $review->created_at->diffForHumans() }}</p>
+                    </div>
+                @empty
+                    <div class="col-span-full bg-zinc-900/50 p-10 rounded-xl border border-zinc-800 text-center">
+                        <p class="text-gray-500 font-bold uppercase tracking-widest">Todavía no hay telemetrías registradas.</p>
+                        <p class="text-zinc-600 text-xs mt-2">¡Sé el primer piloto en opinar!</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>
 
+   
     <section class="py-24 bg-black/80 backdrop-blur-sm">
         <div class="max-w-4xl mx-auto px-6 text-center">
             <h2 class="text-3xl font-black uppercase tracking-tight mb-8 text-white">Nacidos en la <span class="text-kartred">Pista</span></h2>
@@ -195,6 +223,7 @@
         </div>
     </section>
 
+ 
     <footer class="border-t border-zinc-900 bg-black py-12 text-center">
         <div class="max-w-7xl mx-auto px-6">
             <h3 class="text-2xl font-black text-zinc-800 tracking-widest uppercase italic mb-6">KARTBOOKING</h3>

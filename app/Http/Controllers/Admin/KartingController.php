@@ -36,6 +36,26 @@ class KartingController extends Controller
         return redirect()->route('admin.kartings.index')->with('success', '¡Circuito ' . $request->name . ' añadido a la parrilla local!');
     }
 
+    // Mostrar el formulario de edición
+    public function edit(Karting $karting)
+    {
+        return view('admin.kartings.edit', compact('karting'));
+    }
+
+    // Guardar los cambios actualizados
+    public function update(Request $request, Karting $karting)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+        ]);
+
+        $karting->update($request->all());
+
+        return redirect()->route('admin.kartings.index')->with('success', 'Circuito actualizado en la base de datos.');
+    }
+    
     // Eliminar un circuito
     public function destroy(Karting $karting)
     {
