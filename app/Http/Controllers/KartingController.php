@@ -7,14 +7,13 @@ use Illuminate\Support\Facades\Http;
 
 class KartingController extends Controller
 {
-    public function search(Request $request)
+  public function search(Request $request)
     {
         $locationName = $request->input('location');
         $lat = $request->input('lat');
         $lng = $request->input('lng');
         $radio = (int) $request->input('radius', 20);
 
-        
         if ($locationName && (!$lat || !$lng)) {
             $geoResponse = Http::get('https://maps.googleapis.com/maps/api/place/textsearch/json', [
                 'query' => $locationName,
@@ -27,6 +26,36 @@ class KartingController extends Controller
                 $lat = $primerResultado['geometry']['location']['lat'];
                 $lng = $primerResultado['geometry']['location']['lng'];
             }
+        }
+
+       
+        $weather = null;
+        if ($lat && $lng) {
+            try {
+                $weatherResponse = Http::timeout(3)->get("https://api.open-meteo.com/v1/forecast", [
+                    'latitude' => $lat,
+                    'longitude' => $lng,
+                    'current_weather' => true
+                ]);
+
+                if ($weatherResponse->ok()) {
+                    $data = $weatherResponse->json()['current_weather'] ?? null;
+                    if ($data) {
+                        $code = $data['weathercode'];
+                        $desc = 'Despejado';
+                        if (in_array($code, [1, 2, 3])) $desc = 'Nublado';
+                        if (in_array($code, [51, 53, 55, 61, 63, 65, 80, 81, 82])) $desc = 'Lluvia / Pista Mojada';
+                        if (in_array($code, [71, 73, 75, 77, 85, 86])) $desc = 'Nieve / Hielo';
+                        if (in_array($code, [95, 96, 99])) $desc = 'Tormenta Eléctrica';
+
+                        $weather = [
+                            'temp' => $data['temperature'],
+                            'wind' => $data['windspeed'],
+                            'desc' => $desc
+                        ];
+                    }
+                }
+            } catch (\Exception $e) {}
         }
 
         $kartings = [];
@@ -45,12 +74,10 @@ class KartingController extends Controller
             foreach ($resultados as $k) {
                 $nombre = strtolower($k['name']);
 
-                
                 if (!str_contains($nombre, 'kart') && !str_contains($nombre, 'circuito') && !str_contains($nombre, 'motor') && !str_contains($nombre, 'speed')) {
                     continue;
                 }
 
-                
                 $excluir = ['paintball', 'laser', 'escape', 'trampoline', 'bolera', 'spa', 'shopping', 'humor amarillo', 'action live'];
                 $valido = true;
                 foreach ($excluir as $palabra) {
@@ -61,7 +88,6 @@ class KartingController extends Controller
                 }
                 if (!$valido) continue;
 
-                // Calculamos distancia real y descartamos los que se salen del radio
                 if (isset($k['geometry']['location'])) {
                     $placeLat = $k['geometry']['location']['lat'];
                     $placeLng = $k['geometry']['location']['lng'];
@@ -74,13 +100,11 @@ class KartingController extends Controller
                 }
             }
 
-            // Ordenamos por distancia de menor a mayor
             usort($kartings, function($a, $b) {
                 return $a['distancia_real'] <=> $b['distancia_real'];
             });
 
         } elseif ($locationName) {
-            // Si no hay coordenadas buscamos directamente por nombre de ciudad
             $response = Http::get('https://maps.googleapis.com/maps/api/place/textsearch/json', [
                 'query' => 'circuito karting en ' . $locationName,
                 'key' => env('GOOGLE_PLACES_API_KEY'),
@@ -97,7 +121,8 @@ class KartingController extends Controller
             }
         }
 
-        return view('kartings.search', compact('kartings', 'locationName', 'radio'));
+        // Pasamos la variable $weather a la vista
+        return view('kartings.search', compact('kartings', 'locationName', 'radio', 'weather'));
     }
 
     // Formula para calcular distancia entre dos coordenadas en km
@@ -132,7 +157,7 @@ class KartingController extends Controller
                     $placeId = $first['place_id'];
                 }
             } catch (\Exception $e) {
-                // Si la búsqueda por texto falla, usaremos el fallback.
+                
             }
         } else {
             $placeId = $name;
@@ -153,12 +178,12 @@ class KartingController extends Controller
             }
         }
 
-        // LA SOLUCIÓN: Si Google nos da el circuito pero le quita las fotos, metemos nosotros una de alta calidad.
+        
         if ($karting && !isset($karting['photos'])) {
             $karting['image_url'] = 'https://images.unsplash.com/photo-1601597112366-7fb2513d2970?auto=format&fit=crop&w=1200&q=80';
         }
 
-        // SALVAVIDAS: Si ni siquiera encuentra el circuito, montamos uno artificial
+       
         if (!$karting) {
             $karting = [
                 'name' => $name,

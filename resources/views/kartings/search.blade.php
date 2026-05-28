@@ -26,7 +26,7 @@
 
     <main class="flex-1 max-w-7xl mx-auto px-6 py-10 w-full">
 
-        {{-- Cabecera busqueda --}}
+        
         <div class="bg-black border border-zinc-800 rounded-2xl p-8 md:p-12 text-center mb-12">
             <h1 class="text-4xl md:text-6xl font-black uppercase text-white mb-4">
                 Encuentra tu <span class="text-kartred">Karting.</span>
@@ -67,6 +67,18 @@
                 </div>
             </form>
         </div>
+@if(isset($weather))
+            <div class="bg-black border border-zinc-800 rounded-xl p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h3 class="text-kartred font-black uppercase tracking-widest text-xs mb-1">Meteorología de la zona</h3>
+                    <p class="text-white text-2xl font-black uppercase">{{ $weather['temp'] }}C - {{ $weather['desc'] }}</p>
+                </div>
+                <div class="text-left md:text-right">
+                    <p class="text-gray-400 text-sm font-bold uppercase tracking-widest">Viento en pista</p>
+                    <p class="text-white font-mono">{{ $weather['wind'] }} km/h</p>
+                </div>
+            </div>
+        @endif
 
         @if(isset($kartings) && count($kartings) > 0)
             <h2 class="text-xl font-black uppercase text-white mb-6">Resultados ({{ count($kartings) }})</h2>
@@ -78,12 +90,10 @@
             @forelse($kartings as $karting)
             <div class="bg-black border border-zinc-800 rounded-xl overflow-hidden hover:border-kartred transition flex flex-col relative group">
 
-                {{-- Badge distancia --}}
                 <div class="absolute top-3 right-3 bg-kartred text-white text-xs font-bold px-3 py-1 rounded z-20">
-                    {{ $karting['distancia_real'] }} km
+                    {{ $karting['distancia_real'] ?? 'N/A' }} km
                 </div>
 
-                {{-- Imagen --}}
                 <div class="h-52 bg-zinc-900 relative overflow-hidden">
                     @if(isset($karting['photos']) && count($karting['photos']) > 0)
                         <img
@@ -99,21 +109,20 @@
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                 </div>
 
-                {{-- Info --}}
                 <div class="p-5 flex-1 flex flex-col justify-between -mt-10 relative z-10">
                     <div>
-                        <h3 class="text-xl font-black uppercase text-white mb-1">{{ $karting['name'] }}</h3>
-                        <p class="text-gray-400 text-sm mb-3">{{ $karting['formatted_address'] ?? $karting['vicinity'] ?? 'Dirección no disponible' }}</p>
+                        <h3 class="text-xl font-black uppercase text-white mb-1 line-clamp-1">{{ $karting['name'] }}</h3>
+                        <p class="text-gray-400 text-sm mb-3 line-clamp-1">{{ $karting['formatted_address'] ?? $karting['vicinity'] ?? 'Dirección no disponible' }}</p>
 
                         @if(isset($karting['rating']))
                         <div class="flex items-center gap-2 mb-3">
-                            <span class="text-kartred font-bold">{{ $karting['rating'] }}/5</span>
-                            <span class="text-gray-500 text-xs">({{ $karting['user_ratings_total'] ?? 0 }} reseñas)</span>
+                            <span class="text-kartred font-bold text-sm">{{ $karting['rating'] }}/5</span>
+                            <span class="text-gray-500 text-xs uppercase font-bold">({{ $karting['user_ratings_total'] ?? 0 }} reseñas)</span>
                         </div>
                         @endif
                     </div>
 
-                    <a href="{{ route('kartings.show', ['name' => $karting['name'], 'lat' => $karting['geometry']['location']['lat'], 'lon' => $karting['geometry']['location']['lng']]) }}" class="block w-full text-center border border-zinc-700 hover:border-kartred hover:bg-kartred text-white font-bold py-3 rounded-lg uppercase text-sm transition mt-3">
+                    <a href="{{ route('kartings.show', ['name' => $karting['name'], 'lat' => $karting['geometry']['location']['lat'] ?? 0, 'lon' => $karting['geometry']['location']['lng'] ?? 0]) }}" class="block w-full text-center border border-zinc-700 hover:border-kartred hover:bg-kartred text-white font-bold py-3 rounded-lg uppercase text-sm transition mt-3">
                         Ver detalles
                     </a>
                 </div>
