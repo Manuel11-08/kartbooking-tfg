@@ -21,10 +21,16 @@
             <div class="h-96 bg-zinc-900 relative">
                 @if(isset($karting['photos']) && count($karting['photos']) > 0)
                     <img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=1200&photoreference={{ $karting['photos'][0]['photo_reference'] }}&key={{ env('GOOGLE_PLACES_API_KEY') }}" class="w-full h-full object-cover">
+                @elseif(isset($karting['image_url']))
+                    <img src="{{ $karting['image_url'] }}" class="w-full h-full object-cover">
+                @else
+                    <div class="w-full h-full flex items-center justify-center bg-zinc-800 text-zinc-500 uppercase tracking-widest text-sm font-black">
+                        Imagen no disponible
+                    </div>
                 @endif
                 <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-8">
                     <h1 class="text-5xl font-black uppercase text-white mb-2">{{ $karting['name'] }}</h1>
-                    <p class="text-gray-300 font-mono text-sm">{{ $karting['formatted_address'] }}</p>
+                    <p class="text-gray-300 font-mono text-sm">{{ $karting['formatted_address'] ?? ($karting['lat'] && $karting['lon'] ? $karting['lat'] . ', ' . $karting['lon'] : 'Dirección no disponible') }}</p>
                 </div>
             </div>
 
@@ -33,7 +39,7 @@
                     <span class="text-kartred font-black text-3xl">{{ $karting['rating'] ?? 'N/A' }} / 5</span>
                     <span class="text-gray-400 text-xs font-bold uppercase tracking-widest">Valoración General</span>
                 </div>
-                <a href="{{ $karting['url'] ?? '#' }}" target="_blank" class="bg-kartred hover:bg-red-700 text-white font-black px-8 py-3 rounded uppercase transition tracking-wider shadow-lg">
+                <a href="{{ $karting['url'] ?? ($karting['lat'] && $karting['lon'] ? 'https://www.google.com/maps/search/?api=1&query=' . urlencode($karting['lat'] . ',' . $karting['lon']) : '#') }}" target="_blank" class="bg-kartred hover:bg-red-700 text-white font-black px-8 py-3 rounded uppercase transition tracking-wider shadow-lg">
                     Trazar Ruta en Maps
                 </a>
             </div>

@@ -110,19 +110,67 @@ class KartingController extends Controller
         return ($dist * 60 * 1.1515 * 1.609344);
     }
 
-    public function show($id)
+    public function show($name, $lat = null, $lon = null)
     {
-        $response = Http::get('https://maps.googleapis.com/maps/api/place/details/json', [
-            'place_id' => $id,
-            'fields' => 'name,rating,reviews,formatted_address,photos,url',
-            'key' => env('GOOGLE_PLACES_API_KEY'),
-            'language' => 'es'
-        ]);
+        $karting = null;
+        $placeId = null;
 
-        $karting = $response->json()['result'] ?? null;
+        if ($lat !== null && $lon !== null) {
+            try {
+                $searchResponse = Http::get('https://maps.googleapis.com/maps/api/place/textsearch/json', [
+                    'query' => $name,
+                    'location' => $lat . ',' . $lon,
+                    'radius' => 5000,
+                    'key' => env('GOOGLE_PLACES_API_KEY'),
+                    'language' => 'es'
+                ]);
 
+                $results = $searchResponse->json()['results'] ?? [];
+                $first = $results[0] ?? null;
+
+                if ($first && isset($first['place_id'])) {
+                    $placeId = $first['place_id'];
+                }
+            } catch (\Exception $e) {
+                // Si la búsqueda por texto falla, usaremos el fallback.
+            }
+        } else {
+            $placeId = $name;
+        }
+
+        if ($placeId) {
+            try {
+                $response = Http::get('https://maps.googleapis.com/maps/api/place/details/json', [
+                    'place_id' => $placeId,
+                    'fields' => 'name,rating,reviews,formatted_address,photos,url,geometry',
+                    'key' => env('GOOGLE_PLACES_API_KEY'),
+                    'language' => 'es'
+                ]);
+
+                $karting = $response->json()['result'] ?? null;
+            } catch (\Exception $e) {
+                $karting = null;
+            }
+        }
+
+        // LA SOLUCIÓN: Si Google nos da el circuito pero le quita las fotos, metemos nosotros una de alta calidad.
+        if ($karting && !isset($karting['photos'])) {
+            $karting['image_url'] = 'https://images.unsplash.com/photo-1601597112366-7fb2513d2970?auto=format&fit=crop&w=1200&q=80';
+        }
+
+        // SALVAVIDAS: Si ni siquiera encuentra el circuito, montamos uno artificial
         if (!$karting) {
-            return redirect()->route('kartings.search')->with('error', 'No se encontró el circuito');
+            $karting = [
+                'name' => $name,
+                'formatted_address' => $lat && $lon ? 'Coordenadas: ' . $lat . ', ' . $lon : 'Dirección no disponible',
+                'rating' => null,
+                'photos' => [],
+                'reviews' => [],
+                'url' => $lat && $lon ? 'https://www.google.com/maps/search/?api=1&query=' . urlencode($lat . ',' . $lon) : '#',
+                'image_url' => 'https://images.unsplash.com/photo-1601597112366-7fb2513d2970?auto=format&fit=crop&w=1200&q=80',
+                'lat' => $lat,
+                'lon' => $lon,
+            ];
         }
 
         return view('kartings.show', compact('karting'));

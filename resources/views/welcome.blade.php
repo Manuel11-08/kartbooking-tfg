@@ -6,7 +6,6 @@
     <title>Kartbooking - El portal de los pilotos</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        
         .bg-grid-pattern {
             background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
                               linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
@@ -16,7 +15,6 @@
 </head>
 <body class="bg-zinc-950 text-white antialiased flex flex-col min-h-screen selection:bg-kartred selection:text-white bg-grid-pattern">
 
-    <!-- NAVEGACIÓN -->
     <nav class="border-b border-kartred/30 bg-black/80 p-4 sticky top-0 z-50 backdrop-blur-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <a href="/" class="text-2xl font-black text-kartred tracking-widest uppercase italic hover:text-white transition">
@@ -35,7 +33,6 @@
         </div>
     </nav>
 
-    
     <header class="relative flex items-center justify-center py-40 overflow-hidden border-b border-zinc-900 bg-black/40">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-kartred/20 blur-[120px] rounded-full pointer-events-none"></div>
 
@@ -62,7 +59,6 @@
         </div>
     </header>
 
-    <!-- ESTADÍSTICAS -->
     <section class="bg-zinc-900 border-b border-zinc-800 py-12 shadow-2xl relative z-10">
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-zinc-700">
             <div class="py-2 hover:scale-105 transition duration-300">
@@ -80,7 +76,6 @@
         </div>
     </section>
 
-    <!-- CARACTERÍSTICAS -->
     <section class="py-24 bg-black/60 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16">
@@ -108,69 +103,51 @@
         </div>
     </section>
 
-    <!-- CIRCUITOS DESTACADOS -->
     <section class="py-24 bg-zinc-950 border-y border-zinc-900">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-end mb-12">
                 <div>
                     <h2 class="text-4xl font-black uppercase tracking-tight mb-2 text-white border-l-8 border-kartred pl-4">Circuitos Destacados</h2>
-                    <p class="text-gray-500 pl-4">Trazados exigentes con enlace directo a sus coordenadas.</p>
+                    <p class="text-gray-500 pl-4">Trazados recomendados extraídos en tiempo real de la base de datos de Google.</p>
                 </div>
-                <a href="{{ route('kartings.search') }}" class="text-kartred hover:text-white uppercase font-bold text-sm tracking-widest transition mt-6 md:mt-0 border-b border-kartred pb-1">Ver catálogo completo</a>
+                <a href="{{ route('kartings.search') }}" class="text-kartred hover:text-white uppercase font-bold text-sm tracking-widest transition mt-6 md:mt-0 border-b border-kartred pb-1">Ver catálogo completo </a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="group bg-black rounded-xl overflow-hidden border border-zinc-800 hover:border-kartred transition duration-300 shadow-2xl block">
-                    <div class="h-56 overflow-hidden relative flex items-center justify-center bg-zinc-900 border-b border-zinc-800">
-                        <svg class="w-20 h-20 text-zinc-800 group-hover:text-kartred transition duration-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L6.113 22.38a.75.75 0 0 1-1.06 0l-1.434-1.434a.75.75 0 0 1 0-1.06l2.008-2.008a3 3 0 0 1 2.122-.879H9Zm0 0a3 3 0 0 1 3-3h1.5a3 3 0 0 1 3 3m-7.5 0v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V17.25m0 0v1.5c0 .621.504 1.125 1.125 1.125h2.25c.621 0 1.125-.504 1.125-1.125V15.75M12 3v1.5M12 18.75V21m-4.72-15.53 1.06 1.06m7.32-1.06-1.06 1.06M3 12h1.5m15 0H21M4.22 19.78l1.06-1.06m13.44 1.06-1.06-1.06X" />
-                        </svg>
-                        <div class="absolute top-4 left-4 bg-black/80 text-xs font-bold px-3 py-1 rounded border border-zinc-700 tracking-wider">CIRCUITO 01</div>
+                @forelse($featuredKartings as $index => $karting)
+                    <a href="{{ route('kartings.show', ['name' => $karting['name'], 'lat' => $karting['lat'], 'lon' => $karting['lon']]) }}" class="group bg-black rounded-xl overflow-hidden border border-zinc-800 hover:border-kartred transition duration-300 shadow-2xl block relative">
+                        <div class="h-56 overflow-hidden relative bg-zinc-900 border-b border-zinc-800">
+                            @if(isset($karting['image_url']))
+                                <img src="{{ $karting['image_url'] }}" alt="{{ $karting['name'] }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700 opacity-70 group-hover:opacity-100">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center bg-zinc-800 group-hover:bg-zinc-700 transition">
+                                    <span class="text-zinc-500 font-bold uppercase text-xs tracking-widest">Sin imagen satelital</span>
+                                </div>
+                            @endif
+                            <div class="absolute top-4 left-4 bg-black/90 text-xs font-bold px-3 py-1 rounded border border-zinc-700 tracking-wider text-white">DESTACADO 0{{ $index + 1 }}</div>
+                            @if(isset($karting['rating']))
+                                <div class="absolute top-4 right-4 bg-kartred/90 text-xs font-black px-2 py-1 rounded text-white shadow-lg">{{ $karting['rating'] }}</div>
+                            @endif
+                        </div>
+                        <div class="p-6 relative z-20">
+                            <span class="text-[10px] font-black text-kartred uppercase tracking-widest mb-1 block line-clamp-1">{{ $karting['formatted_address'] ?? 'Ubicación desconocida' }}</span>
+                            <h3 class="text-xl font-black uppercase text-white mb-2 group-hover:text-kartred transition line-clamp-1">{{ $karting['name'] }}</h3>
+                            <p class="text-gray-400 text-sm font-mono text-kartred border-b border-kartred/30 pb-1 inline-block mt-4">Ver Ficha Técnica </p>
+                        </div>
+                    </a>
+                @empty
+                    <div class="col-span-full p-10 bg-zinc-900/50 rounded-xl border border-zinc-800 text-center">
+                        <p class="text-gray-500 font-bold uppercase tracking-widest text-sm">Escaneando circuitos destacados... .</p>
                     </div>
-                    <div class="p-6 relative z-20">
-                        <span class="text-xs font-black text-kartred uppercase tracking-widest mb-1 block">Madrid</span>
-                        <h3 class="text-xl font-black uppercase text-white mb-2 group-hover:text-kartred transition">Karting Carlos Sainz</h3>
-                        <p class="text-gray-400 text-sm font-mono mb-4">Indoor - Asfalto Técnico</p>
-                    </div>
-                </div>
-                
-                <div class="group bg-black rounded-xl overflow-hidden border border-zinc-800 hover:border-kartred transition duration-300 shadow-2xl block">
-                    <div class="h-56 overflow-hidden relative flex items-center justify-center bg-zinc-900 border-b border-zinc-800">
-                        <svg class="w-20 h-20 text-zinc-800 group-hover:text-kartred transition duration-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L6.113 22.38a.75.75 0 0 1-1.06 0l-1.434-1.434a.75.75 0 0 1 0-1.06l2.008-2.008a3 3 0 0 1 2.122-.879H9Zm0 0a3 3 0 0 1 3-3h1.5a3 3 0 0 1 3 3m-7.5 0v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V17.25m0 0v1.5c0 .621.504 1.125 1.125 1.125h2.25c.621 0 1.125-.504 1.125-1.125V15.75M12 3v1.5M12 18.75V21m-4.72-15.53 1.06 1.06m7.32-1.06-1.06 1.06M3 12h1.5m15 0H21M4.22 19.78l1.06-1.06m13.44 1.06-1.06-1.06X" />
-                        </svg>
-                        <div class="absolute top-4 left-4 bg-black/80 text-xs font-bold px-3 py-1 rounded border border-zinc-700 tracking-wider">CIRCUITO 02</div>
-                    </div>
-                    <div class="p-6 relative z-20">
-                        <span class="text-xs font-black text-kartred uppercase tracking-widest mb-1 block">Málaga</span>
-                        <h3 class="text-xl font-black uppercase text-white mb-2 group-hover:text-kartred transition">KartCenter Campillos</h3>
-                        <p class="text-gray-400 text-sm font-mono mb-4">Outdoor - Trazado CIK-FIA</p>
-                    </div>
-                </div>
-
-                <div class="group bg-black rounded-xl overflow-hidden border border-zinc-800 hover:border-kartred transition duration-300 shadow-2xl block">
-                    <div class="h-56 overflow-hidden relative flex items-center justify-center bg-zinc-900 border-b border-zinc-800">
-                        <svg class="w-20 h-20 text-zinc-800 group-hover:text-kartred transition duration-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L6.113 22.38a.75.75 0 0 1-1.06 0l-1.434-1.434a.75.75 0 0 1 0-1.06l2.008-2.008a3 3 0 0 1 2.122-.879H9Zm0 0a3 3 0 0 1 3-3h1.5a3 3 0 0 1 3 3m-7.5 0v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V17.25m0 0v1.5c0 .621.504 1.125 1.125 1.125h2.25c.621 0 1.125-.504 1.125-1.125V15.75M12 3v1.5M12 18.75V21m-4.72-15.53 1.06 1.06m7.32-1.06-1.06 1.06M3 12h1.5m15 0H21M4.22 19.78l1.06-1.06m13.44 1.06-1.06-1.06X" />
-                        </svg>
-                        <div class="absolute top-4 left-4 bg-black/80 text-xs font-bold px-3 py-1 rounded border border-zinc-700 tracking-wider">CIRCUITO 03</div>
-                    </div>
-                    <div class="p-6 relative z-20">
-                        <span class="text-xs font-black text-kartred uppercase tracking-widest mb-1 block">Teruel</span>
-                        <h3 class="text-xl font-black uppercase text-white mb-2 group-hover:text-kartred transition">Karting Motorland</h3>
-                        <p class="text-gray-400 text-sm font-mono mb-4">Outdoor - Alta Velocidad</p>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>
 
-   
     <section class="py-20 bg-black border-b border-zinc-900">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-3xl font-black uppercase tracking-tight mb-12 text-center text-white">Opiniones en <span class="text-kartred">Boxes</span></h2>
 
-            
             <div class="text-center mb-16">
                 @auth
                     <a href="{{ route('mis-resenas') }}" class="inline-block bg-zinc-900 border border-zinc-700 hover:border-kartred text-white font-bold py-3 px-8 rounded uppercase transition duration-300 tracking-wider text-sm shadow-lg">
@@ -184,7 +161,6 @@
                 @endauth
             </div>
 
-            <!-- Lista de reseñas de la Base de Datos -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse($reviews as $review)
                     <div class="bg-zinc-900 p-8 rounded-lg border border-zinc-800 relative hover:border-kartred transition duration-300">
@@ -203,7 +179,6 @@
         </div>
     </section>
 
-   
     <section class="py-24 bg-black/80 backdrop-blur-sm">
         <div class="max-w-4xl mx-auto px-6 text-center">
             <h2 class="text-3xl font-black uppercase tracking-tight mb-8 text-white">Nacidos en la <span class="text-kartred">Pista</span></h2>
@@ -223,7 +198,6 @@
         </div>
     </section>
 
- 
     <footer class="border-t border-zinc-900 bg-black py-12 text-center">
         <div class="max-w-7xl mx-auto px-6">
             <h3 class="text-2xl font-black text-zinc-800 tracking-widest uppercase italic mb-6">KARTBOOKING</h3>

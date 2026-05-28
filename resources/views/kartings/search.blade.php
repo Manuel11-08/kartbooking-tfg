@@ -113,7 +113,7 @@
                         @endif
                     </div>
 
-                    <a href="{{ route('kartings.show', $karting['place_id']) }}" class="block w-full text-center border border-zinc-700 hover:border-kartred hover:bg-kartred text-white font-bold py-3 rounded-lg uppercase text-sm transition mt-3">
+                    <a href="{{ route('kartings.show', ['name' => $karting['name'], 'lat' => $karting['geometry']['location']['lat'], 'lon' => $karting['geometry']['location']['lng']]) }}" class="block w-full text-center border border-zinc-700 hover:border-kartred hover:bg-kartred text-white font-bold py-3 rounded-lg uppercase text-sm transition mt-3">
                         Ver detalles
                     </a>
                 </div>
