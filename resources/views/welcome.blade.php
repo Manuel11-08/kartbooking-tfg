@@ -23,6 +23,7 @@
             <div class="space-x-6 text-sm font-bold text-gray-300 uppercase tracking-wider hidden md:block">
                 <a href="{{ route('kartings.search') }}" class="hover:text-kartred transition">Buscador</a>
                 <a href="{{ route('contacto') }}" class="hover:text-kartred transition">Contacto</a>
+                <a href="{{ route('meetups.index') }}" class="hover:text-kartred transition">Tandas</a>
                 @auth
                     <a href="{{ url('/dashboard') }}" class="text-kartred hover:text-white transition">Mi Box</a>
                 @else
