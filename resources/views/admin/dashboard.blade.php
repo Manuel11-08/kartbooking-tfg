@@ -34,7 +34,7 @@
             
             <h1 class="text-3xl font-black uppercase tracking-widest text-white mb-4">Sistemas en Línea</h1>
             <p class="text-gray-400 font-mono text-sm leading-relaxed">
-                Bienvenido al Centro de Mando, Jefe de Equipo.<br><br>
+                Bienvenido al Centro de Mando<br><br>
                 Utiliza el menú de telemetría a tu izquierda para gestionar los pilotos de la parrilla, dar de alta circuitos y moderar la plataforma.
             </p>
         </div>

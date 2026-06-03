@@ -10,7 +10,7 @@
     <nav class="border-b border-kartred/30 bg-black/80 p-4 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <a href="/" class="text-2xl font-black text-kartred tracking-widest uppercase italic">KARTBOOKING</a>
-            <a href="{{ route('meetups.index') }}" class="text-sm font-bold text-gray-300 hover:text-white uppercase tracking-wider"><- Volver</a>
+            <a href="{{ route('meetups.index') }}" class="text-sm font-bold text-gray-300 hover:text-white uppercase tracking-wider"> Volver</a>
         </div>
     </nav>
 
