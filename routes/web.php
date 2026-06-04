@@ -149,4 +149,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+   Route::post('/regenerar-telemetria', function () {
+    $resultado = shell_exec('python3 ' . base_path('scripts/analisis_telemetria.py') . ' 2>&1');
+        if (str_contains($resultado, 'correctamente')) {
+         return back()->with('success', 'Gráfico regenerado correctamente.');
+        }
+        return back()->with('error', 'Error al regenerar: ' . $resultado);
+    })->name('telemetria.regenerar');
 });
