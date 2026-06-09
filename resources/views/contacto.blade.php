@@ -14,6 +14,7 @@
             <div class="flex gap-6 text-sm font-bold text-gray-300 uppercase">
                 <a href="/" class="hover:text-kartred">Inicio</a>
                 <a href="{{ route('kartings.search') }}" class="hover:text-kartred">Buscador</a>
+                <a href="{{ route('meetups.index') }}" class="hover:text-kartred">Tandas</a>
                   @auth
                     <a href="{{ url('/dashboard') }}" class="text-kartred hover:text-white transition">Mi Box</a>
                 @else

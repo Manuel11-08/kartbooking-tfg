@@ -61,7 +61,7 @@
                         @endif
                     @endif
                     
-                    @if(auth()->id() === $meetup->user_id || auth()->user()->is_admin)
+                   @if(auth()->check() && auth()->user()->is_admin)
                         <form action="{{ route('meetups.destroy', $meetup) }}" method="POST">
                             @csrf @method('DELETE')
                             <button class="bg-red-900/50 hover:bg-red-600 text-red-500 hover:text-white px-4 py-2 rounded font-bold uppercase text-xs border border-red-900 transition" onsubmit="return confirm('¿Cancelar tanda?')">X</button>

@@ -17,6 +17,7 @@
             <div class="flex justify-end items-center gap-6">
                 <a href="/" class="text-sm font-bold text-gray-300 hover:text-kartred uppercase transition tracking-wider">Inicio</a>
                 <a href="{{ route('contacto') }}" class="text-sm font-bold text-gray-300 hover:text-kartred uppercase transition tracking-wider">Contacto</a>
+                <a href="{{ route('meetups.index') }}" class="text-sm font-bold text-gray-300 hover:text-kartred uppercase transition tracking-wider">Tandas</a>
                 @auth
                     <a href="{{ url('/dashboard') }}" class="text-sm font-bold text-gray-300 hover:text-white uppercase transition tracking-wider">Mi Box</a>
                 @endauth

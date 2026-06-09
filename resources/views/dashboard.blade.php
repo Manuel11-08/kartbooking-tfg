@@ -14,6 +14,8 @@
             <div class="flex gap-4 md:gap-6 text-sm font-bold text-gray-300 uppercase items-center">
                 <a href="/" class="hover:text-kartred hidden md:block">Inicio</a>
                 <a href="{{ route('kartings.search') }}" class="hover:text-kartred hidden md:block">Buscador</a>
+                <a href="{{ route('contacto') }}" class="hover:text-kartred transition">Contacto</a>
+                <a href="{{ route('meetups.index') }}" class="hover:text-kartred">Tandas</a>
                 
                 @if(auth()->user()->is_admin == 1 || auth()->user()->role === 'admin' || auth()->user()->type === 'admin') 
                     <a href="{{ route('admin.dashboard') }}" class="text-kartred border border-kartred px-3 py-1.5 rounded hover:bg-kartred hover:text-white transition tracking-widest font-black shadow-[0_0_10px_rgba(230,0,0,0.3)] bg-kartred/10">
