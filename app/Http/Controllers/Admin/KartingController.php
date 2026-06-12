@@ -26,8 +26,8 @@ class KartingController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
         ]);
 
         Karting::create($request->all());
@@ -47,8 +47,8 @@ class KartingController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
         ]);
 
         $karting->update($request->all());

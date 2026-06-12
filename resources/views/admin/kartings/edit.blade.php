@@ -43,11 +43,11 @@
             <div class="grid grid-cols-2 gap-6 mb-8">
                 <div>
                     <label class="block text-kartred font-bold uppercase text-sm mb-2">Latitud</label>
-                    <input type="text" name="latitude" value="{{ $karting->latitude }}" required class="w-full bg-black border border-zinc-700 rounded p-3 text-white font-mono focus:border-kartred outline-none">
+                    <input type="number" name="latitude" value="{{ $karting->latitude }}" step="0.000001" min="-90" max="90" required class="w-full bg-black border border-zinc-700 rounded p-3 text-white font-mono focus:border-kartred outline-none">
                 </div>
                 <div>
                     <label class="block text-kartred font-bold uppercase text-sm mb-2">Longitud</label>
-                    <input type="text" name="longitude" value="{{ $karting->longitude }}" required class="w-full bg-black border border-zinc-700 rounded p-3 text-white font-mono focus:border-kartred outline-none">
+                    <input type="number" name="longitude" value="{{ $karting->longitude }}" step="0.000001" min="-180" max="180" required class="w-full bg-black border border-zinc-700 rounded p-3 text-white font-mono focus:border-kartred outline-none">
                 </div>
             </div>
             <div class="flex gap-4">

@@ -40,11 +40,11 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block uppercase text-xs font-bold text-gray-500 mb-2">Latitud GPS</label>
-                            <input type="text" name="latitude" placeholder="Ej: 41.0487" class="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:ring-kartred focus:border-kartred outline-none transition" required>
+                            <input type="number" name="latitude" step="0.000001" min="-90" max="90" placeholder="Ej: 41.0487" class="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:ring-kartred focus:border-kartred outline-none transition" required>
                         </div>
                         <div>
                             <label class="block uppercase text-xs font-bold text-gray-500 mb-2">Longitud GPS</label>
-                            <input type="text" name="longitude" placeholder="Ej: -0.1345" class="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:ring-kartred focus:border-kartred outline-none transition" required>
+                            <input type="number" name="longitude" step="0.000001" min="-180" max="180" placeholder="Ej: -0.1345" class="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:ring-kartred focus:border-kartred outline-none transition" required>
                         </div>
                     </div>
                     <button type="submit" class="w-full bg-kartred hover:bg-red-700 text-white font-black py-4 rounded uppercase transition tracking-wider shadow-lg shadow-kartred/20 mt-4">
