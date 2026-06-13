@@ -15,24 +15,57 @@
 </head>
 <body class="bg-zinc-950 text-white antialiased flex flex-col min-h-screen selection:bg-kartred selection:text-white bg-grid-pattern">
 
-    <nav class="border-b border-kartred/30 bg-black/80 p-4 sticky top-0 z-50 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="/" class="text-2xl font-black text-kartred tracking-widest uppercase italic hover:text-white transition">
-                KARTBOOKING
-            </a>
-            <div class="space-x-6 text-sm font-bold text-gray-300 uppercase tracking-wider hidden md:block">
-                <a href="{{ route('kartings.search') }}" class="hover:text-kartred transition">Buscador</a>
-                <a href="{{ route('contacto') }}" class="hover:text-kartred transition">Contacto</a>
-                <a href="{{ route('meetups.index') }}" class="hover:text-kartred transition">Tandas</a>
-                @auth
-                    <a href="{{ url('/dashboard') }}" class="text-kartred hover:text-white transition">Mi Box</a>
-                @else
-                    <a href="{{ route('login') }}" class="hover:text-kartred transition">Entrar</a>
-                    <a href="{{ route('register') }}" class="bg-kartred text-white px-4 py-2 rounded hover:bg-red-700 transition shadow-[0_0_15px_rgba(230,0,0,0.3)]">Licencia</a>
-                @endauth
-            </div>
+ 
+{{-- x-data define el estado 'open' para controlar si el menú móvil está abierto o cerrado --}}
+<nav class="border-b border-kartred/30 bg-black/80 p-4 sticky top-0 z-50 backdrop-blur-md" x-data="{ open: false }">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+
+    
+        <a href="/" class="text-2xl font-black text-kartred tracking-widest uppercase italic hover:text-white transition">
+            KARTBOOKING
+        </a>
+
+        {{-- Menú de escritorio --}}
+        <div class="space-x-6 text-sm font-bold text-gray-300 uppercase tracking-wider hidden md:block">
+            <a href="{{ route('kartings.search') }}" class="hover:text-kartred transition">Buscador</a>
+            <a href="{{ route('contacto') }}" class="hover:text-kartred transition">Contacto</a>
+            <a href="{{ route('meetups.index') }}" class="hover:text-kartred transition">Tandas</a>
+            @auth
+                
+                <a href="{{ url('/dashboard') }}" class="text-kartred hover:text-white transition">Mi Box</a>
+            @else
+                
+                <a href="{{ route('login') }}" class="hover:text-kartred transition">Entrar</a>
+                <a href="{{ route('register') }}" class="bg-kartred text-white px-4 py-2 rounded hover:bg-red-700 transition shadow-[0_0_15px_rgba(230,0,0,0.3)]">Licencia</a>
+            @endauth
         </div>
-    </nav>
+
+        {{-- Botón hamburguesa --}}
+        <button @click="open = !open" class="md:hidden text-white p-2" aria-label="Abrir menú">
+            <svg x-show="!open" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+            <svg x-show="open" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+
+    {{-- Menú desplegable en móvil --}}
+    
+    <div x-show="open" x-cloak class="md:hidden mt-4 px-2 space-y-3 text-sm font-bold text-gray-300 uppercase tracking-wider" style="display: none;">
+
+        <a href="{{ route('kartings.search') }}" class="block hover:text-kartred transition" @click="open = false">Buscador</a>
+        <a href="{{ route('contacto') }}" class="block hover:text-kartred transition" @click="open = false">Contacto</a>
+        <a href="{{ route('meetups.index') }}" class="block hover:text-kartred transition" @click="open = false">Tandas</a>
+        @auth
+            <a href="{{ url('/dashboard') }}" class="block text-kartred hover:text-white transition" @click="open = false">Mi Box</a>
+        @else
+            <a href="{{ route('login') }}" class="block hover:text-kartred transition" @click="open = false">Entrar</a>
+            <a href="{{ route('register') }}" class="block bg-kartred text-white px-4 py-2 rounded text-center hover:bg-red-700 transition" @click="open = false">Licencia</a>
+        @endauth
+    </div>
+</nav>
 
     <header class="relative flex items-center justify-center py-40 overflow-hidden border-b border-zinc-900 bg-black/40">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-kartred/20 blur-[120px] rounded-full pointer-events-none"></div>
